@@ -107,7 +107,7 @@ section{margin-top:24px;scroll-margin-top:16px;position:relative}
 .sec-title{font-size:1.65rem;margin:4px 0 2px}
 .sec-sub{color:var(--muted);font-weight:500;font-size:.92rem;margin-bottom:14px}
 
-/* 5pm ticket */
+/* promise ticket */
 .ticket{border:3px solid var(--ink);border-radius:18px;overflow:hidden;background:var(--card);box-shadow:6px 6px 0 var(--ink)}
 .ticket-top{padding:18px 18px 14px;position:relative}
 .ticket-top h2{font-size:1.55rem}
@@ -239,25 +239,26 @@ canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:60}
     <div class="hint">psst — tap his nose. <span class="hand">he doesn't bite (probably).</span></div>
   </div>
 
-  <div class="marquee"><div>&nbsp;mery · catboy delivery · reply before 5pm · mery · catboy delivery · reply before 5pm · mery · catboy delivery · reply before 5pm ·&nbsp;</div></div>
+  <div class="marquee"><div>&nbsp;mery · ur catboy · no deadlines · mery · ur catboy · no deadlines · mery · ur catboy · no deadlines ·&nbsp;</div></div>
 
   <section>
     <div class="ticket tilt-l">
       <div class="ticket-top">
-        <div class="sec-kick">the deal · no. 001</div>
-        <h2>the 5pm deal</h2>
-        <p style="color:var(--muted);font-weight:500;font-size:.9rem;margin-top:4px">u reply before 5pm = i turn into a catboy. no refunds, no take-backs.</p>
+        <div class="sec-kick">no. 001 · the promise</div>
+        <h2>already urs</h2>
+        <p style="color:var(--muted);font-weight:500;font-size:.9rem;margin-top:4px">ok the 5pm thing was just bait to get u here. truth is: no deadlines, no conditions. u have a catboy. he's urs. claim him.</p>
+        <p style="font-weight:700;font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;margin-top:12px">loving u for…</p>
         <div class="timer">
           <div class="tbox"><b id="hh">00</b><span>hrs</span></div>
           <div class="tbox"><b id="mm">00</b><span>min</span></div>
           <div class="tbox"><b id="ss">00</b><span>sec</span></div>
         </div>
         <div class="progress"><i id="bar"></i></div>
-        <p id="dealMsg"></p>
+        <p id="dealMsg">love meter: full. no refunds, no take-backs.</p>
       </div>
       <div class="perf"></div>
       <div class="ticket-bottom">
-        <button class="btn ink" id="claimBtn">i replied — turn into a catboy</button>
+        <button class="btn ink" id="claimBtn">claim ur catboy</button>
         <div class="btn-row">
           <button class="btn paper small" id="meowBtn">meow</button>
           <button class="btn paper small" id="purrBtn">purr</button>
@@ -331,7 +332,7 @@ canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:60}
 
   <footer>
     <div><span class="stamp">mailed with love · for mery</span></div>
-    <span id="footTime"></span><br><span style="opacity:.55">v5 · for mery · by nishant</span>
+    <span id="footTime"></span><br><span style="opacity:.55">v6 · for mery · by nishant</span>
   </footer>
 </div>
 
@@ -346,7 +347,7 @@ canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:60}
 
 <script>
 // typing
-const lines=["i missed u, so i made u this…","ur into catboys? say less.","everything here is tappable.","the 5pm deal still stands."];
+const lines=["i missed u, so i made u this…","ur into catboys? say less.","everything here is tappable.","no deadlines. just us."];
 let li=0,ci=0,del=false;
 const typed=document.getElementById('typed');
 (function typeLoop(){
@@ -373,24 +374,16 @@ for(let i=0;i<12;i++){
   floaties.appendChild(s);
 }
 
-// countdown to next 5pm local
-function next5(){
-  const n=new Date();const t=new Date(n);
-  t.setHours(17,0,0,0);
-  if(n>=t)t.setDate(t.getDate()+1);
-  return t;
-}
-let target=next5();
-const hh=document.getElementById('hh'),mm=document.getElementById('mm'),ss=document.getElementById('ss'),bar=document.getElementById('bar'),dealMsg=document.getElementById('dealMsg');
+// count-up: how long this page has been loving her. always true, never confusing.
+const openedAt=Date.now();
+const hh=document.getElementById('hh'),mm=document.getElementById('mm'),ss=document.getElementById('ss'),bar=document.getElementById('bar');
 function tick(){
-  const now=new Date();
-  let diff=target-now;
-  if(diff<=0){target=next5();diff=target-now;}
-  const h=Math.floor(diff/36e5),m=Math.floor(diff%36e5/6e4),s=Math.floor(diff%6e4/1e3);
-  hh.textContent=String(h).padStart(2,'0');mm.textContent=String(m).padStart(2,'0');ss.textContent=String(s).padStart(2,'0');
-  const total=24*36e5;bar.style.width=((1-diff/total)*100).toFixed(2)+'%';
-  dealMsg.textContent = now.getHours()<17 ? `hurry — ${h}h ${m}m left to claim ur catboy` : `past 5pm? extension granted. forever.`;
-  document.getElementById('footTime').textContent='open 24/7 for mery • '+now.toLocaleDateString();
+  const s=Math.floor((Date.now()-openedAt)/1000);
+  hh.textContent=String(Math.floor(s/3600)).padStart(2,'0');
+  mm.textContent=String(Math.floor(s%3600/60)).padStart(2,'0');
+  ss.textContent=String(s%60).padStart(2,'0');
+  bar.style.width='100%';
+  document.getElementById('footTime').textContent='open 24/7 for mery • '+new Date().toLocaleDateString();
 }
 setInterval(tick,1000);tick();
 
