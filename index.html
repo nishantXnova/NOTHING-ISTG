@@ -184,29 +184,7 @@ section{margin-top:24px;scroll-margin-top:16px;position:relative}
 .pola figcaption{font-family:'Caveat',cursive;font-size:1.35rem;line-height:1.15;padding:8px 4px 0;text-align:center}
 .pola .mini-tape{position:absolute;top:-13px;left:50%;transform:translateX(-50%) rotate(4deg);width:86px;height:24px;background:var(--tape);border-left:2px dashed rgba(43,35,32,.25);border-right:2px dashed rgba(43,35,32,.25)}
 
-/* music strip + video card */
-.music{display:flex;align-items:center;gap:14px;background:var(--ink);color:var(--paper);border:3px solid var(--ink);border-radius:16px;
-  padding:12px 14px;box-shadow:6px 6px 0 rgba(43,35,32,.25);margin-top:22px;transform:rotate(.7deg)}
-.music .disc{flex:0 0 52px;width:52px;height:52px;border-radius:50%;border:3px solid var(--paper);position:relative;
-  background:conic-gradient(var(--red) 0 25%,var(--butter) 0 50%,var(--mint) 0 75%,var(--sky) 0)}
-.music .disc::after{content:'';position:absolute;inset:17px;background:var(--ink);border:2px solid var(--paper);border-radius:50%}
-.music.playing .disc{animation:spin 2.4s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.music .meta{flex:1;min-width:0}
-.music .meta b{font-size:.9rem;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.music .meta small{color:#c9bfae;font-weight:500;font-size:.75rem}
-.eq{display:inline-flex;align-items:flex-end;gap:2.5px;height:14px;margin-left:7px;vertical-align:-2px}
-.eq i{width:3.5px;background:var(--butter);border-radius:2px;height:5px}
-.music.playing .eq i{animation:eq .8s ease-in-out infinite}
-.music.playing .eq i:nth-child(2){animation-delay:.2s}.music.playing .eq i:nth-child(3){animation-delay:.4s}
-@keyframes eq{0%,100%{height:5px}50%{height:14px}}
-#musicBtn{flex:0 0 auto;border:3px solid var(--paper);background:var(--red);color:#fff;font-weight:700;font-size:.82rem;
-  padding:10px 16px;border-radius:12px;cursor:pointer;font-family:'Space Grotesk',sans-serif}
-#musicBtn:active{transform:translate(2px,2px)}
-#ytplayer{position:absolute;width:2px;height:2px;opacity:.02;pointer-events:none;overflow:hidden}
-.ytcard{background:var(--card);border:3px solid var(--ink);border-radius:18px;padding:16px;box-shadow:6px 6px 0 var(--ink);margin-top:16px;transform:rotate(-.7deg);position:relative}
-.ytframe{margin-top:10px;border:3px solid var(--ink);border-radius:12px;overflow:hidden;background:#111;aspect-ratio:16/9}
-.ytframe iframe{width:100%;height:100%;border:0;display:block}
+/* (background music lived here — removed in v5) */
 
 footer{text-align:center;margin-top:30px;color:var(--muted);font-weight:500;font-size:.82rem}
 .stamp{display:inline-block;border:3px solid var(--red);color:var(--red);font-weight:700;letter-spacing:.2em;font-size:.72rem;text-transform:uppercase;
@@ -262,19 +240,6 @@ canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:60}
   </div>
 
   <div class="marquee"><div>&nbsp;mery · catboy delivery · reply before 5pm · mery · catboy delivery · reply before 5pm · mery · catboy delivery · reply before 5pm ·&nbsp;</div></div>
-
-  <div class="music" id="musicStrip">
-    <div class="disc"></div>
-    <div class="meta"><b>background tape<span class="eq"><i></i><i></i><i></i></span></b><small id="musicSub">peaceful piano · auto-plays on first tap</small></div>
-    <button id="musicBtn">play</button>
-  </div>
-  <div class="ytcard">
-    <div class="tape"></div>
-    <div class="sec-kick">the real song · press play</div>
-    <b style="font-size:.95rem">No Other Heart — Mac DeMarco</b>
-    <div class="ytframe"><iframe src="https://www.youtube-nocookie.com/embed/lPeJMoms_Ag?rel=0" title="Mac DeMarco - No Other Heart" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
-    <div class="hint">box empty? youtube is blocked on that network → <a href="https://youtu.be/lPeJMoms_Ag" target="_blank" rel="noopener" style="color:var(--red);font-weight:700">open in youtube ↗</a></div>
-  </div>
 
   <section>
     <div class="ticket tilt-l">
@@ -366,7 +331,7 @@ canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:60}
 
   <footer>
     <div><span class="stamp">mailed with love · for mery</span></div>
-    <span id="footTime"></span><br><span style="opacity:.55">v4 · for mery · by nishant</span>
+    <span id="footTime"></span><br><span style="opacity:.55">v5 · for mery · by nishant</span>
   </footer>
 </div>
 
@@ -433,29 +398,7 @@ setInterval(tick,1000);tick();
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('show')}),{threshold:.15});
 document.querySelectorAll('.reason,.pola').forEach(r=>io.observe(r));
 
-// background tape: peaceful piano. tap play, or it starts on first tap.
-// (the real Mac DeMarco track lives in the video card above —
-//  youtube's autoplay rules + adblockers make it un-autostartable,
-//  so the tape guarantees music no matter what.)
-const BACKUP_TAPE = "https://upload.wikimedia.org/wikipedia/commons/4/44/Meditation_Impromptu_01_%28ISRC_USUAN1100163%29.mp3";
-let musicOn=false;
-const musicStrip=document.getElementById('musicStrip'), musicBtn=document.getElementById('musicBtn'), musicSub=document.getElementById('musicSub');
-const backupAudio=new Audio(BACKUP_TAPE); backupAudio.preload='none'; backupAudio.loop=true; backupAudio.volume=.55;
-function paintMusic(){
-  musicStrip.classList.toggle('playing', musicOn);
-  musicBtn.textContent = musicOn ? 'pause' : 'play';
-}
-backupAudio.addEventListener('play',()=>{musicOn=true;paintMusic();});
-backupAudio.addEventListener('pause',()=>{musicOn=false;paintMusic();});
-backupAudio.addEventListener('error',()=>{ musicSub.textContent='tape needs internet interconnect'; }, {once:true});
-musicBtn.onclick=e=>{
-  e.stopPropagation();
-  if(backupAudio.paused) backupAudio.play().catch(()=>{musicBtn.textContent='tap again';});
-  else backupAudio.pause();
-};
-addEventListener('pointerdown', function startMusic(){
-  if(backupAudio.paused) backupAudio.play().catch(()=>{});
-}, {once:true});
+// (background music removed in v5)
 
 // modal
 const modal=document.getElementById('modal');
