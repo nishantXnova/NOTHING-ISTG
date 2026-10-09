@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>for mery — open this</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shrikhand&family=Caveat:wght@600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --paper:#f3ead8; --card:#fffaf0; --ink:#2b2320; --muted:#7d7066;
+  --red:#e23a50; --butter:#ffd23f; --mint:#bfe3b4; --sky:#b9cdf7;
+  --tape:rgba(255,210,63,.6);
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Space Grotesk',system-ui,sans-serif; color:var(--ink);
+  background:var(--paper); overflow-x:hidden; min-height:100vh;
+  background-image:radial-gradient(rgba(43,35,32,.10) 1px, transparent 1px);
+  background-size:22px 22px;
+}
+body::after{ /* paper grain */
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.5;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .05 0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+h1,h2{font-family:'Shrikhand',cursive;font-weight:400;line-height:1.02;letter-spacing:.005em}
+.hand{font-family:'Caveat',cursive}
+.wrap{max-width:520px;margin:0 auto;padding:0 18px 90px;position:relative;z-index:2}
+
+/* faint drifting doodles */
+#floaties{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden}
+.floaty{position:absolute;bottom:-60px;animation:floatUp linear infinite;font-family:'Caveat',cursive}
+@keyframes floatUp{to{transform:translateY(-115vh) rotate(30deg)}}
+
+/* stub ticket on top */
+.stub{
+  display:flex;justify-content:space-between;align-items:center;gap:10px;
+  background:var(--card);border:3px solid var(--ink);border-radius:14px;
+  padding:10px 14px;margin:18px 4px 0;transform:rotate(-1.6deg);
+  box-shadow:5px 5px 0 var(--ink);position:relative;
+}
+.stub .t{font-weight:700;font-size:.78rem;letter-spacing:.14em;text-transform:uppercase}
+.stub .t small{display:block;letter-spacing:.02em;text-transform:none;font-weight:500;color:var(--muted);font-size:.78rem}
+.barcode{flex:0 0 74px;height:34px;
+  background:repeating-linear-gradient(90deg,var(--ink) 0 2px,transparent 2px 5px,var(--ink) 5px 6px,transparent 6px 10px);
+  border-left:2px dashed var(--ink);padding-left:10px;
+}
+
+/* hero */
+.hero{min-height:88svh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:26px 0 10px;position:relative}
+.kicker{font-weight:700;font-size:.8rem;letter-spacing:.22em;text-transform:uppercase;background:var(--ink);color:var(--paper);padding:7px 14px;border-radius:100px;transform:rotate(1.5deg)}
+.hero h1{font-size:clamp(2.9rem,15vw,4.4rem);margin:16px 0 2px}
+.hero h1 .circled{position:relative;display:inline-block;padding:0 .12em;white-space:nowrap}
+.hero h1 .circled::after{content:'';position:absolute;left:-4%;right:-4%;top:8%;bottom:2%;border:3px solid var(--red);border-radius:52% 48% 55% 45%/60% 55% 45% 50%;transform:rotate(-2deg);pointer-events:none}
+.type{font-size:1.02rem;color:var(--muted);font-weight:500;min-height:1.7em;margin-top:8px}
+.type .caret{display:inline-block;width:2px;height:1.05em;background:var(--red);vertical-align:middle;animation:blink 1s infinite;margin-left:2px}
+@keyframes blink{50%{opacity:0}}
+.arrow-doodle{width:120px;height:34px;margin:2px 0 -6px 70px;transform:rotate(6deg);opacity:.85}
+
+.cat-stage{position:relative;margin:20px 0 4px;width:240px;height:236px;display:grid;place-items:center}
+.cat-face{
+  width:182px;height:172px;background:var(--card);border-radius:46% 46% 48% 48%;
+  border:3.5px solid var(--ink);position:relative;box-shadow:7px 7px 0 var(--ink);
+  transition:transform .15s;
+}
+.cat-face:active{transform:scale(.95) rotate(-1deg)}
+.ear{position:absolute;top:-24px;width:66px;height:70px;background:var(--card);border:3.5px solid var(--ink);z-index:-1;transition:all .5s cubic-bezier(.34,1.56,.64,1)}
+.ear.left{left:8px;border-radius:14% 88% 12% 88%;transform:rotate(-12deg)}
+.ear.right{right:8px;border-radius:88% 14% 88% 12%;transform:rotate(12deg)}
+.ear::after{content:'';position:absolute;inset:15px 13px 11px;background:var(--butter);border-radius:inherit;border:2px solid var(--ink)}
+body.catboy .ear{animation:earWiggle 2.2s ease-in-out infinite}
+body.catboy .ear.right{animation-delay:.25s}
+@keyframes earWiggle{0%,100%{transform:rotate(-12deg)}50%{transform:rotate(-5deg) translateY(-3px)}}
+.eye{position:absolute;top:66px;width:22px;height:30px;background:var(--ink);border-radius:50%;overflow:hidden}
+.eye.left{left:42px}.eye.right{right:42px}
+.eye::after{content:'';position:absolute;top:6px;left:5px;width:8px;height:8px;background:var(--card);border-radius:50%;animation:blinkEye 4.5s infinite}
+@keyframes blinkEye{0%,93%,100%{transform:scaleY(1)}95%{transform:scaleY(.05)}}
+.blush{position:absolute;top:102px;width:28px;height:13px;background:var(--red);border-radius:50%;opacity:.5}
+.blush.l{left:22px;transform:rotate(-8deg)}.blush.r{right:22px;transform:rotate(8deg)}
+.nose{position:absolute;top:100px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:9px solid transparent;border-right:9px solid transparent;border-top:10px solid var(--red);cursor:pointer}
+.mouth{position:absolute;top:112px;left:50%;transform:translateX(-50%);font-size:21px;font-weight:700}
+.tail{position:absolute;right:-30px;bottom:6px;width:28px;height:112px;border:3.5px solid var(--ink);border-radius:20px;transform-origin:bottom center;opacity:0;transform:scale(0);
+  background:repeating-linear-gradient(-45deg,var(--mint) 0 12px,var(--card) 12px 24px)}
+body.catboy .tail{opacity:1;transform:scale(1);animation:tailWag 1.7s ease-in-out infinite;transition:all .5s cubic-bezier(.34,1.56,.64,1)}
+@keyframes tailWag{0%,100%{rotate:-18deg}50%{rotate:18deg}}
+.bell{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);width:26px;height:26px;background:var(--butter);border:3px solid var(--ink);border-radius:50%;opacity:0;transition:.5s}
+.bell::after{content:'';position:absolute;left:50%;top:100%;width:3px;height:9px;background:var(--ink);transform:translateX(-50%)}
+body.catboy .bell{opacity:1;animation:bellSwing 2s ease-in-out infinite}
+@keyframes bellSwing{0%,100%{rotate:-10deg}50%{rotate:10deg}}
+.hint{font-size:.82rem;color:var(--muted);font-weight:500;margin-top:8px}
+.hint .hand{font-size:1.05rem;color:var(--ink)}
+
+/* marquee divider */
+.marquee{border-top:3px solid var(--ink);border-bottom:3px solid var(--ink);background:var(--ink);color:var(--paper);
+  width:100vw;margin-left:calc(-50vw + 50%);transform:rotate(-1.2deg);overflow:hidden;white-space:nowrap;margin-top:26px}
+.marquee div{display:inline-block;padding:9px 0;font-weight:700;letter-spacing:.18em;font-size:.78rem;text-transform:uppercase;animation:scroll 16s linear infinite}
+@keyframes scroll{to{transform:translateX(-50%)}}
+
+/* sticker cards */
+section{margin-top:24px;scroll-margin-top:16px;position:relative}
+.sticker{background:var(--card);border:3px solid var(--ink);border-radius:20px;padding:22px 18px;box-shadow:6px 6px 0 var(--ink);position:relative}
+.sticker.tilt-l{transform:rotate(-.8deg)} .sticker.tilt-r{transform:rotate(.9deg)}
+.tape{position:absolute;top:-14px;left:50%;transform:translateX(-50%) rotate(-3deg);width:110px;height:28px;background:var(--tape);border-left:2px dashed rgba(43,35,32,.25);border-right:2px dashed rgba(43,35,32,.25)}
+.sec-kick{font-size:.72rem;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:var(--red)}
+.sec-title{font-size:1.65rem;margin:4px 0 2px}
+.sec-sub{color:var(--muted);font-weight:500;font-size:.92rem;margin-bottom:14px}
+
+/* 5pm ticket */
+.ticket{border:3px solid var(--ink);border-radius:18px;overflow:hidden;background:var(--card);box-shadow:6px 6px 0 var(--ink)}
+.ticket-top{padding:18px 18px 14px;position:relative}
+.ticket-top h2{font-size:1.55rem}
+.perf{border-top:3px dashed var(--ink);position:relative;margin:0}
+.perf::before,.perf::after{content:'';position:absolute;top:-13px;width:22px;height:22px;background:var(--paper);border:3px solid var(--ink);border-radius:50%}
+.perf::before{left:-14px}.perf::after{right:-14px}
+.ticket-bottom{padding:14px 18px 18px;background:var(--butter)}
+.timer{display:flex;gap:10px;margin:14px 0 4px}
+.tbox{flex:1;background:var(--card);border:3px solid var(--ink);border-radius:14px;padding:8px 4px;text-align:center;box-shadow:3px 3px 0 var(--ink)}
+.tbox b{display:block;font-size:1.6rem;line-height:1;font-variant-numeric:tabular-nums}
+.tbox span{font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.progress{height:16px;background:var(--card);border:3px solid var(--ink);border-radius:100px;overflow:hidden;margin-top:12px}
+.progress i{display:block;height:100%;width:0%;background:repeating-linear-gradient(-55deg,var(--red) 0 10px,#c22a40 10px 20px);transition:width 1s}
+#dealMsg{font-weight:700;margin-top:10px;font-size:.93rem}
+
+/* buttons — chunky sticker style, no gradients */
+.btn{appearance:none;border:3px solid var(--ink);cursor:pointer;font-weight:700;font-size:1.02rem;font-family:'Space Grotesk',sans-serif;
+  color:var(--paper);padding:14px 20px;border-radius:14px;background:var(--red);
+  box-shadow:5px 5px 0 var(--ink);transition:transform .12s, box-shadow .12s;width:100%;margin-top:14px}
+.btn:active{transform:translate(3px,3px);box-shadow:2px 2px 0 var(--ink)}
+.btn.ink{background:var(--ink)}
+.btn.paper{background:var(--card);color:var(--ink)}
+.btn.small{font-size:.9rem;padding:11px 14px;width:auto}
+.btn-row{display:flex;gap:12px;margin-top:12px}
+.btn-row .btn{margin-top:0;flex:1}
+
+/* pet */
+.pet-area{text-align:center}
+#petCount{font-family:'Shrikhand',cursive;font-size:3rem;line-height:1}
+#petCount small{font-family:'Space Grotesk';font-size:.8rem;font-weight:700;letter-spacing:.14em;color:var(--muted);display:block}
+#petMsg{font-size:1.5rem;min-height:1.6em;color:var(--red)}
+.hearts-burst{position:fixed;pointer-events:none;z-index:99;font-size:1.3rem;font-weight:700;animation:burst 1s ease-out forwards}
+@keyframes burst{to{transform:translateY(-110px) scale(1.35) rotate(18deg);opacity:0}}
+
+/* reasons — editorial numbered rows */
+.reasons{display:grid;gap:2px;border:3px solid var(--ink);border-radius:18px;overflow:hidden;background:var(--ink);box-shadow:6px 6px 0 var(--ink)}
+.reason{background:var(--card);padding:15px 16px;display:flex;gap:14px;align-items:flex-start;text-align:left;
+  transform:translateY(16px);opacity:0;transition:all .55s cubic-bezier(.2,.8,.2,1)}
+.reason.show{transform:none;opacity:1}
+.reason .num{font-family:'Shrikhand',cursive;font-size:1.7rem;line-height:1;color:transparent;-webkit-text-stroke:1.6px var(--ink);flex:0 0 44px}
+.reason:nth-child(2n) .num{-webkit-text-stroke-color:var(--red)}
+.reason b{font-size:.99rem}
+.reason p{font-size:.88rem;color:var(--muted);font-weight:500;line-height:1.55;margin-top:2px}
+.tag{display:inline-block;font-size:.66rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;border:2px solid var(--ink);border-radius:100px;padding:2px 9px;margin-bottom:6px;background:var(--mint)}
+.reason:nth-child(2n) .tag{background:var(--sky)} .reason:nth-child(3n) .tag{background:var(--butter)}
+
+/* coupons — ticket stubs */
+.coupons{display:grid;gap:12px}
+.coupon{background:var(--card);border:3px solid var(--ink);border-radius:14px;display:flex;align-items:stretch;overflow:hidden;box-shadow:4px 4px 0 var(--ink)}
+.coupon .stub-l{flex:0 0 62px;display:grid;place-items:center;background:var(--mint);border-right:3px dashed var(--ink);font-family:'Shrikhand';font-size:1.25rem}
+.coupon:nth-child(2n) .stub-l{background:var(--sky)} .coupon:nth-child(3n) .stub-l{background:var(--butter)}
+.coupon .mid{flex:1;padding:11px 12px}
+.coupon b{font-size:.92rem} .coupon small{display:block;color:var(--muted);font-weight:500;font-size:.78rem;margin-top:2px}
+.coupon button{flex:0 0 auto;align-self:center;margin-right:12px;border:3px solid var(--ink);background:var(--ink);color:var(--paper);font-weight:700;font-size:.78rem;padding:8px 13px;border-radius:10px;cursor:pointer;box-shadow:3px 3px 0 rgba(43,35,32,.25)}
+.coupon button:active{transform:translate(2px,2px);box-shadow:none}
+.coupon.redeemed{opacity:.62} .coupon.redeemed .stub-l{background:var(--mint)}
+.coupon.redeemed button{background:var(--card);color:var(--ink);box-shadow:none}
+
+/* letter — lined paper */
+.letter{background:var(--card);border:3px solid var(--ink);border-radius:6px 20px 20px 20px;padding:26px 22px 22px 34px;box-shadow:6px 6px 0 var(--ink);position:relative;
+  background-image:repeating-linear-gradient(transparent 0 27px, rgba(43,35,32,.12) 27px 28px);}
+.letter::before{content:'';position:absolute;top:0;bottom:0;left:24px;width:2px;background:rgba(226,58,80,.45)}
+.letter p{font-size:.93rem;line-height:28px;font-weight:500}
+.letter .hand{font-size:1.6rem;color:var(--ink)}
+.sign{margin-top:6px;text-align:right}
+.sign .hand{color:var(--red);font-size:1.5rem;transform:rotate(-2deg);display:inline-block}
+
+/* polaroids */
+.polas{display:grid;gap:18px;margin-top:4px}
+.pola{background:#fff;border:3px solid var(--ink);border-radius:6px;padding:10px 10px 12px;box-shadow:6px 6px 0 var(--ink);position:relative;
+  transform:translateY(16px) rotate(var(--tilt,0deg));opacity:0;transition:all .55s cubic-bezier(.2,.8,.2,1)}
+.pola.show{transform:rotate(var(--tilt,0deg));opacity:1}
+.pola img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;border:2.5px solid var(--ink);border-radius:3px;background:var(--paper)}
+.pola figcaption{font-family:'Caveat',cursive;font-size:1.35rem;line-height:1.15;padding:8px 4px 0;text-align:center}
+.pola .mini-tape{position:absolute;top:-13px;left:50%;transform:translateX(-50%) rotate(4deg);width:86px;height:24px;background:var(--tape);border-left:2px dashed rgba(43,35,32,.25);border-right:2px dashed rgba(43,35,32,.25)}
+
+/* music strip + video card */
+.music{display:flex;align-items:center;gap:14px;background:var(--ink);color:var(--paper);border:3px solid var(--ink);border-radius:16px;
+  padding:12px 14px;box-shadow:6px 6px 0 rgba(43,35,32,.25);margin-top:22px;transform:rotate(.7deg)}
+.music .disc{flex:0 0 52px;width:52px;height:52px;border-radius:50%;border:3px solid var(--paper);position:relative;
+  background:conic-gradient(var(--red) 0 25%,var(--butter) 0 50%,var(--mint) 0 75%,var(--sky) 0)}
+.music .disc::after{content:'';position:absolute;inset:17px;background:var(--ink);border:2px solid var(--paper);border-radius:50%}
+.music.playing .disc{animation:spin 2.4s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.music .meta{flex:1;min-width:0}
+.music .meta b{font-size:.9rem;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.music .meta small{color:#c9bfae;font-weight:500;font-size:.75rem}
+.eq{display:inline-flex;align-items:flex-end;gap:2.5px;height:14px;margin-left:7px;vertical-align:-2px}
+.eq i{width:3.5px;background:var(--butter);border-radius:2px;height:5px}
+.music.playing .eq i{animation:eq .8s ease-in-out infinite}
+.music.playing .eq i:nth-child(2){animation-delay:.2s}.music.playing .eq i:nth-child(3){animation-delay:.4s}
+@keyframes eq{0%,100%{height:5px}50%{height:14px}}
+#musicBtn{flex:0 0 auto;border:3px solid var(--paper);background:var(--red);color:#fff;font-weight:700;font-size:.82rem;
+  padding:10px 16px;border-radius:12px;cursor:pointer;font-family:'Space Grotesk',sans-serif}
+#musicBtn:active{transform:translate(2px,2px)}
+#ytplayer{position:absolute;width:2px;height:2px;opacity:.02;pointer-events:none;overflow:hidden}
+.ytcard{background:var(--card);border:3px solid var(--ink);border-radius:18px;padding:16px;box-shadow:6px 6px 0 var(--ink);margin-top:16px;transform:rotate(-.7deg);position:relative}
+.ytframe{margin-top:10px;border:3px solid var(--ink);border-radius:12px;overflow:hidden;background:#111;aspect-ratio:16/9}
+.ytframe iframe{width:100%;height:100%;border:0;display:block}
+
+footer{text-align:center;margin-top:30px;color:var(--muted);font-weight:500;font-size:.82rem}
+.stamp{display:inline-block;border:3px solid var(--red);color:var(--red);font-weight:700;letter-spacing:.2em;font-size:.72rem;text-transform:uppercase;
+  padding:8px 16px;border-radius:8px;transform:rotate(-4deg);margin-bottom:10px;opacity:.9}
+
+/* modal */
+#modal{position:fixed;inset:0;z-index:50;display:none;place-items:center;padding:20px;background:rgba(43,35,32,.5);backdrop-filter:blur(4px)}
+#modal.open{display:grid}
+.modal-card{background:var(--card);border:3px solid var(--ink);border-radius:20px;padding:26px 22px;max-width:360px;width:100%;text-align:center;animation:pop .4s cubic-bezier(.34,1.56,.64,1);box-shadow:8px 8px 0 var(--ink)}
+@keyframes pop{from{transform:scale(.7) rotate(-4deg);opacity:0}}
+.modal-card h2{font-size:1.8rem;margin:6px 0}
+.modal-card p{font-weight:500;color:var(--muted);font-size:.92rem}
+.shake{animation:shake .45s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px) rotate(-1deg)}75%{transform:translateX(7px) rotate(1deg)}}
+canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:60}
+</style>
+</head>
+<body>
+<canvas id="confetti"></canvas>
+<div id="floaties"></div>
+
+<div class="wrap">
+
+  <div class="stub">
+    <div class="t">admit one · for mery<small>open when u see this. yes, now.</small></div>
+    <div class="barcode"></div>
+  </div>
+
+  <div class="hero">
+    <div class="kicker">urgent catboy delivery</div>
+    <h1>hey <span class="circled">mery</span>,</h1>
+    <div class="type"><span id="typed"></span><span class="caret"></span></div>
+
+    <svg class="arrow-doodle" viewBox="0 0 120 34" fill="none" stroke="#e23a50" stroke-width="3" stroke-linecap="round">
+      <path d="M4 6 C 40 28, 70 28, 104 12"/>
+      <path d="M92 6 L105 12 L94 22"/>
+    </svg>
+
+    <div class="cat-stage" id="catStage" title="boop me">
+      <div class="tail"></div>
+      <div class="cat-face" id="catFace">
+        <div class="ear left"></div>
+        <div class="ear right"></div>
+        <div class="eye left"></div>
+        <div class="eye right"></div>
+        <div class="blush l"></div><div class="blush r"></div>
+        <div class="nose" id="nose"></div>
+        <div class="mouth">ω</div>
+        <div class="bell"></div>
+      </div>
+    </div>
+    <div class="hint">psst — tap his nose. <span class="hand">he doesn't bite (probably).</span></div>
+  </div>
+
+  <div class="marquee"><div>&nbsp;mery · catboy delivery · reply before 5pm · mery · catboy delivery · reply before 5pm · mery · catboy delivery · reply before 5pm ·&nbsp;</div></div>
+
+  <div class="music" id="musicStrip">
+    <div class="disc"></div>
+    <div class="meta"><b>background tape<span class="eq"><i></i><i></i><i></i></span></b><small id="musicSub">peaceful piano · auto-plays on first tap</small></div>
+    <button id="musicBtn">play</button>
+  </div>
+  <div class="ytcard">
+    <div class="tape"></div>
+    <div class="sec-kick">the real song · press play</div>
+    <b style="font-size:.95rem">No Other Heart — Mac DeMarco</b>
+    <div class="ytframe"><iframe src="https://www.youtube-nocookie.com/embed/lPeJMoms_Ag?rel=0" title="Mac DeMarco - No Other Heart" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+    <div class="hint">box empty? youtube is blocked on that network → <a href="https://youtu.be/lPeJMoms_Ag" target="_blank" rel="noopener" style="color:var(--red);font-weight:700">open in youtube ↗</a></div>
+  </div>
+
+  <section>
+    <div class="ticket tilt-l">
+      <div class="ticket-top">
+        <div class="sec-kick">the deal · no. 001</div>
+        <h2>the 5pm deal</h2>
+        <p style="color:var(--muted);font-weight:500;font-size:.9rem;margin-top:4px">u reply before 5pm = i turn into a catboy. no refunds, no take-backs.</p>
+        <div class="timer">
+          <div class="tbox"><b id="hh">00</b><span>hrs</span></div>
+          <div class="tbox"><b id="mm">00</b><span>min</span></div>
+          <div class="tbox"><b id="ss">00</b><span>sec</span></div>
+        </div>
+        <div class="progress"><i id="bar"></i></div>
+        <p id="dealMsg"></p>
+      </div>
+      <div class="perf"></div>
+      <div class="ticket-bottom">
+        <button class="btn ink" id="claimBtn">i replied — turn into a catboy</button>
+        <div class="btn-row">
+          <button class="btn paper small" id="meowBtn">meow</button>
+          <button class="btn paper small" id="purrBtn">purr</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="pet">
+    <div class="sticker tilt-r pet-area">
+      <div class="tape"></div>
+      <div class="sec-kick">interactive · 002</div>
+      <h2 class="sec-title">pet the catboy</h2>
+      <p class="sec-sub">every tap = +1 love. milestones at 10, 25, 50, 100, 200.</p>
+      <div id="petCount">0<small>headpats given</small></div>
+      <div id="petMsg" class="hand"></div>
+      <button class="btn" id="petBtn">pat pat pat</button>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-kick" style="text-align:center">field notes · 003</div>
+    <h2 class="sec-title" style="text-align:center">why mery is the best</h2>
+    <p class="sec-sub" style="text-align:center">peer-reviewed by me, a catboy.</p>
+    <div class="reasons" id="reasons">
+      <div class="reason"><div class="num">01</div><div><span class="tag">certified fact</span><br><b>ur smile fixes bad days</b><p>one reply from u and my whole brain does happy zoomies.</p></div></div>
+      <div class="reason"><div class="num">02</div><div><span class="tag">elite taste</span><br><b>certified catboy enjoyer</b><p>catboys? u just get it. that's rare.</p></div></div>
+      <div class="reason"><div class="num">03</div><div><span class="tag">lab result</span><br><b>u reply = instant magic</b><p>left on seen, and i still built u a whole website. that's power.</p></div></div>
+      <div class="reason"><div class="num">04</div><div><span class="tag">unanimous</span><br><b>best hg ever</b><p>funny, pretty, kind — i could keep going. all day.</p></div></div>
+      <div class="reason"><div class="num">05</div><div><span class="tag">3am thought</span><br><b>curl-up certified</b><p>if i turn into a catboy i'm sitting next to u. no debate.</p></div></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-kick" style="text-align:center">exhibit · 004</div>
+    <h2 class="sec-title" style="text-align:center">cats that remind me of u</h2>
+    <p class="sec-sub" style="text-align:center">evidence below. no further questions.</p>
+    <div class="polas">
+      <figure class="pola" style="--tilt:-1.6deg"><span class="mini-tape"></span><img loading="lazy" src="cats/cat1.jpg" alt="a cute grey kitten" onerror="this.onerror=null;this.src='https://commons.wikimedia.org/wiki/Special:FilePath/Cute%20grey%20kitten.jpg?width=600'"><figcaption>me waiting for ur reply</figcaption></figure>
+      <figure class="pola" style="--tilt:1.4deg"><span class="mini-tape"></span><img loading="lazy" src="cats/cat2.jpg" alt="two cute kittens" onerror="this.onerror=null;this.src='https://commons.wikimedia.org/wiki/Special:FilePath/Cute%20Kittens.jpg?width=600'"><figcaption>u when u see this site</figcaption></figure>
+      <figure class="pola" style="--tilt:-1deg"><span class="mini-tape"></span><img loading="lazy" src="cats/cat3.jpg" alt="a kitten sleeping on a bed" onerror="this.onerror=null;this.src='https://commons.wikimedia.org/wiki/Special:FilePath/Cute%20Kitten%20sleeping%20on%20bed.jpg?width=600'"><figcaption>us soon. probably.</figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <div class="sticker tilt-l">
+      <div class="tape"></div>
+      <div class="sec-kick">redeemable · 005</div>
+      <h2 class="sec-title">catboy coupons</h2>
+      <p class="sec-sub">tear one off. valid forever.</p>
+      <div class="coupons" id="coupons">
+        <div class="coupon"><div class="stub-l">A</div><div class="mid"><b>1 free forgiveness</b><small>for the slow replies. never again.</small></div><button>Redeem</button></div>
+        <div class="coupon"><div class="stub-l">B</div><div class="mid"><b>unlimited hugs</b><small>catboy cuddles hit different.</small></div><button>Redeem</button></div>
+        <div class="coupon"><div class="stub-l">C</div><div class="mid"><b>1 snack run</b><small>whatever u crave, i'm going.</small></div><button>Redeem</button></div>
+        <div class="coupon"><div class="stub-l">D</div><div class="mid"><b>1 late-night yap session</b><small>u talk, i listen. and meow.</small></div><button>Redeem</button></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="letter">
+      <div class="hand">dear mery baby,</div>
+      <p style="margin-top:6px">okay listen. i said if u reply before 5pm i'd turn into a catboy, and a promise is a promise. i don't have the ears irl (yet)… so i made u this instead.</p>
+      <p style="margin-top:6px">u weren't replying and i was just sitting here like — so now i'm a catboy about it. come back, i miss yapping with u.</p>
+      <p style="margin-top:6px">reply “meow” if u accept ur delivery.</p>
+      <div class="sign"><span class="hand">— nishant</span><br><span class="hand" style="font-size:1.15rem;color:var(--muted)">(u can call me catboy or smthng)</span></div>
+      <button class="btn" id="shareBtn" style="margin-top:16px">send “meow” back</button>
+      <div class="hint" style="text-align:center">copies a cute reply for u to send me</div>
+    </div>
+  </section>
+
+  <footer>
+    <div><span class="stamp">mailed with love · for mery</span></div>
+    <span id="footTime"></span><br><span style="opacity:.55">v4 · for mery · by nishant</span>
+  </footer>
+</div>
+
+<div id="modal">
+  <div class="modal-card" id="modalCard">
+    <div style="font-size:2.6rem" id="modalEmo">NYAN</div>
+    <h2 id="modalTitle">NYAN!!</h2>
+    <p id="modalText"></p>
+    <button class="btn ink" id="modalBtn">okay cute</button>
+  </div>
+</div>
+
+<script>
+// typing
+const lines=["i missed u, so i made u this…","ur into catboys? say less.","everything here is tappable.","the 5pm deal still stands."];
+let li=0,ci=0,del=false;
+const typed=document.getElementById('typed');
+(function typeLoop(){
+  const cur=lines[li];
+  typed.textContent=cur.slice(0,ci);
+  if(!del){ci++;if(ci>cur.length+8)del=true;}
+  else{ci--;if(ci===0){del=false;li=(li+1)%lines.length;}}
+  setTimeout(typeLoop,del?28:62);
+})();
+
+// faint paper doodles drifting (kept subtle on purpose)
+const floaties=document.getElementById('floaties');
+const ems=['✶','♡','✿','◦','⁓','×'];
+const doodleColors=['#2b2320','#e23a50','#7d7066'];
+for(let i=0;i<12;i++){
+  const s=document.createElement('span');s.className='floaty';
+  s.textContent=ems[Math.floor(Math.random()*ems.length)];
+  s.style.left=Math.random()*100+'vw';
+  s.style.fontSize=(16+Math.random()*20)+'px';
+  s.style.opacity=.28;
+  s.style.color=doodleColors[Math.floor(Math.random()*doodleColors.length)];
+  s.style.animationDuration=(10+Math.random()*10)+'s';
+  s.style.animationDelay=(-Math.random()*14)+'s';
+  floaties.appendChild(s);
+}
+
+// countdown to next 5pm local
+function next5(){
+  const n=new Date();const t=new Date(n);
+  t.setHours(17,0,0,0);
+  if(n>=t)t.setDate(t.getDate()+1);
+  return t;
+}
+let target=next5();
+const hh=document.getElementById('hh'),mm=document.getElementById('mm'),ss=document.getElementById('ss'),bar=document.getElementById('bar'),dealMsg=document.getElementById('dealMsg');
+function tick(){
+  const now=new Date();
+  let diff=target-now;
+  if(diff<=0){target=next5();diff=target-now;}
+  const h=Math.floor(diff/36e5),m=Math.floor(diff%36e5/6e4),s=Math.floor(diff%6e4/1e3);
+  hh.textContent=String(h).padStart(2,'0');mm.textContent=String(m).padStart(2,'0');ss.textContent=String(s).padStart(2,'0');
+  const total=24*36e5;bar.style.width=((1-diff/total)*100).toFixed(2)+'%';
+  dealMsg.textContent = now.getHours()<17 ? `hurry — ${h}h ${m}m left to claim ur catboy` : `past 5pm? extension granted. forever.`;
+  document.getElementById('footTime').textContent='open 24/7 for mery • '+now.toLocaleDateString();
+}
+setInterval(tick,1000);tick();
+
+// reveal
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('show')}),{threshold:.15});
+document.querySelectorAll('.reason,.pola').forEach(r=>io.observe(r));
+
+// background tape: peaceful piano. tap play, or it starts on first tap.
+// (the real Mac DeMarco track lives in the video card above —
+//  youtube's autoplay rules + adblockers make it un-autostartable,
+//  so the tape guarantees music no matter what.)
+const BACKUP_TAPE = "https://upload.wikimedia.org/wikipedia/commons/4/44/Meditation_Impromptu_01_%28ISRC_USUAN1100163%29.mp3";
+let musicOn=false;
+const musicStrip=document.getElementById('musicStrip'), musicBtn=document.getElementById('musicBtn'), musicSub=document.getElementById('musicSub');
+const backupAudio=new Audio(BACKUP_TAPE); backupAudio.preload='none'; backupAudio.loop=true; backupAudio.volume=.55;
+function paintMusic(){
+  musicStrip.classList.toggle('playing', musicOn);
+  musicBtn.textContent = musicOn ? 'pause' : 'play';
+}
+backupAudio.addEventListener('play',()=>{musicOn=true;paintMusic();});
+backupAudio.addEventListener('pause',()=>{musicOn=false;paintMusic();});
+backupAudio.addEventListener('error',()=>{ musicSub.textContent='tape needs internet interconnect'; }, {once:true});
+musicBtn.onclick=e=>{
+  e.stopPropagation();
+  if(backupAudio.paused) backupAudio.play().catch(()=>{musicBtn.textContent='tap again';});
+  else backupAudio.pause();
+};
+addEventListener('pointerdown', function startMusic(){
+  if(backupAudio.paused) backupAudio.play().catch(()=>{});
+}, {once:true});
+
+// modal
+const modal=document.getElementById('modal');
+function showModal(emo,title,text){
+  document.getElementById('modalEmo').textContent=emo;
+  document.getElementById('modalTitle').textContent=title;
+  document.getElementById('modalText').textContent=text;
+  modal.classList.add('open');
+}
+document.getElementById('modalBtn').onclick=()=>modal.classList.remove('open');
+modal.onclick=e=>{if(e.target===modal)modal.classList.remove('open')};
+
+// confetti
+const cv=document.getElementById('confetti'),ctx=cv.getContext('2d');let parts=[];
+function sizeCv(){cv.width=innerWidth;cv.height=innerHeight}sizeCv();addEventListener('resize',sizeCv);
+function boom(n=140){
+  const colors=['#e23a50','#ffd23f','#2b2320','#bfe3b4','#b9cdf7','#fffaf0'];
+  for(let i=0;i<n;i++)parts.push({x:innerWidth/2+(Math.random()-.5)*160,y:innerHeight*0.35,vx:(Math.random()-.5)*11,vy:Math.random()*-9-2,g:.28,s:5+Math.random()*7,c:colors[i%colors.length],r:Math.random()*Math.PI,vr:(Math.random()-.5)*.3,l:90+Math.random()*60,emo:Math.random()<.14?['♡','✶','●'][Math.floor(Math.random()*3)]:null});
+  if(!ticking){ticking=true;requestAnimationFrame(step)}
+}
+let ticking=false;
+function step(){
+  ctx.clearRect(0,0,cv.width,cv.height);
+  parts=parts.filter(p=>p.l>0);
+  parts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=p.g;p.r+=p.vr;p.l--;p.vx*=.99;
+    ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.r);
+    if(p.emo){ctx.font='bold '+p.s*3+'px serif';ctx.fillStyle=p.c;ctx.fillText(p.emo,0,0)}else{ctx.fillStyle=p.c;ctx.fillRect(-p.s/2,-p.s/2,p.s,p.s*0.6)}
+    ctx.restore();});
+  if(parts.length){requestAnimationFrame(step)}else{ticking=false;ctx.clearRect(0,0,cv.width,cv.height)}
+}
+
+// sounds: real recordings + cute synth fallback (no more harsh sawtooth)
+const SOUNDS = {
+  meow1: "https://upload.wikimedia.org/wikipedia/commons/6/62/Meow.ogg",
+  meow2: "https://upload.wikimedia.org/wikipedia/commons/0/0c/Meow_domestic_cat.ogg",
+  meow3: "https://upload.wikimedia.org/wikipedia/commons/6/6b/Meow_of_a_pleading_cat.oga",
+  purr: "https://actions.google.com/sounds/v1/animals/cat_purr_close.ogg"
+};
+// preload
+const audioCache = {};
+for (const k in SOUNDS) {
+  const a = new Audio(SOUNDS[k]);
+  a.preload = "auto";
+  audioCache[k] = a;
+}
+function playReal(key, rate) {
+  try {
+    const src = audioCache[key];
+    const c = src.cloneNode();
+    if (rate) c.playbackRate = rate;
+    c.volume = 0.9;
+    c.play().catch(()=>{});
+    return true;
+  } catch(e){ return false; }
+}
+let AC;
+function ac(){if(!AC)AC=new (window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();return AC;}
+// cute fallback "nyan~": soft triangle + vibrato + lowpass, no harsh buzz
+function synthNyan(){
+  try{
+    const a=ac(),t=a.currentTime;
+    const o=a.createOscillator(),o2=a.createOscillator(),g=a.createGain(),f=a.createBiquadFilter();
+    const vib=a.createOscillator(),vg=a.createGain();
+    o.type='triangle';o2.type='sine';
+    // nyaa~ pitch: 620 -> 780 -> 560
+    o.frequency.setValueAtTime(620,t);
+    o.frequency.linearRampToValueAtTime(790,t+.16);
+    o.frequency.linearRampToValueAtTime(700,t+.32);
+    o.frequency.linearRampToValueAtTime(540,t+.55);
+    o2.frequency.setValueAtTime(1240,t);
+    o2.frequency.linearRampToValueAtTime(1580,t+.16);
+    o2.frequency.linearRampToValueAtTime(1080,t+.55);
+    vib.frequency.value=7;vg.gain.value=14;
+    vib.connect(vg).connect(o.frequency);vib.connect(vg).connect(o2.frequency);
+    f.type='lowpass';f.frequency.value=2400;f.Q.value=.6;
+    const g2=a.createGain();g2.gain.value=.18; // keep octave quiet
+    g.gain.setValueAtTime(.0001,t);
+    g.gain.exponentialRampToValueAtTime(.5,t+.06);
+    g.gain.setValueAtTime(.5,t+.4);
+    g.gain.exponentialRampToValueAtTime(.0001,t+.62);
+    o.connect(f);o2.connect(g2).connect(f);f.connect(g).connect(a.destination);
+    o.start(t);o2.start(t);vib.start(t);o.stop(t+.7);o2.stop(t+.7);vib.stop(t+.7);
+  }catch(e){}
+}
+function softPop(){
+  try{
+    const a=ac(),t=a.currentTime,o=a.createOscillator(),g=a.createGain();
+    o.type='sine';o.frequency.setValueAtTime(500,t);o.frequency.exponentialRampToValueAtTime(850,t+.09);
+    g.gain.setValueAtTime(.25,t);g.gain.exponentialRampToValueAtTime(.0001,t+.14);
+    o.connect(g).connect(a.destination);o.start(t);o.stop(t+.16);
+  }catch(e){}
+}
+let meowAlt = false;
+function meow(){
+  meowAlt = !meowAlt;
+  // pick a real recording, alternate for variety, slight random pitch
+  const key = meowAlt ? 'meow1' : 'meow2';
+  const rate = 0.97 + Math.random()*0.12;
+  const el = audioCache[key];
+  if (el && el.readyState >= 1) playReal(key, rate);
+  else synthNyan();
+  // ensure unlock on mobile
+  try{ ac(); }catch(e){}
+}
+let purrAudio = null;
+function purr(){
+  // real soft purr; stop previous so pats don't stack harshly
+  try{
+    if (purrAudio) { try{ purrAudio.pause(); }catch(e){} purrAudio = null; }
+    const src = audioCache['purr'];
+    if (src && src.readyState >= 1) {
+      purrAudio = src.cloneNode(); purrAudio.volume = .55; purrAudio.play().catch(()=>synthNyan());
+      return;
+    }
+  }catch(e){}
+  softPop();
+}
+document.getElementById('meowBtn').onclick=meow;
+document.getElementById('purrBtn').onclick=purr;
+
+// claim transformation
+let claimed=false;
+document.getElementById('claimBtn').onclick=()=>{
+  document.body.classList.add('catboy');
+  boom(180);meow();setTimeout(purr,400);
+  const card=document.getElementById('modalCard');card.classList.remove('shake');void card.offsetWidth;card.classList.add('shake');
+  showModal('★','*POOF* — catboy mode','nyan. ears: on. tail: wagging. owner: mery. i belong to u now.');
+  document.getElementById('claimBtn').textContent='nyan! meow again';
+  claimed=true;
+};
+
+// pet counter
+let pats=0;
+const petCount=document.getElementById('petCount'),petMsg=document.getElementById('petMsg');
+const msgs=[[10,'hehe… that tickles'],[25,"purrr… don't stop"],[50,"okay. i'm urs now, officially"],[100,'ONE HUNDRED?? best girl fr'],[200,'u broke the pat-o-meter. marrying u.']];
+const burstColors=['#e23a50','#2b2320','#7d7066'];
+function burstHearts(x,y){
+  for(let i=0;i<6;i++){const s=document.createElement('span');s.className='hearts-burst';
+    s.textContent=['♡','♥','✶'][Math.floor(Math.random()*3)];
+    s.style.color=burstColors[Math.floor(Math.random()*burstColors.length)];
+    s.style.left=(x+(Math.random()-.5)*60)+'px';s.style.top=y+'px';document.body.appendChild(s);
+    setTimeout(()=>s.remove(),1000);}
+}
+function pat(x,y){
+  pats++;petCount.innerHTML=pats+'<small>headpats given</small>';softPop();
+  const face=document.getElementById('catFace');face.style.transform='scale(.93) rotate('+(Math.random()*6-3)+'deg)';
+  setTimeout(()=>face.style.transform='',150);
+  if(x!==undefined)burstHearts(x,y);
+  const m=msgs.find(m=>m[0]===pats);
+  if(m){petMsg.textContent=m[1];boom(80);showModal('♥','yay — '+pats+' pats',m[1]);}
+  else petMsg.textContent = pats<5?'nyan':pats<15?'mrrp! more':pats<40?'purrrr':'so loved';
+}
+document.getElementById('petBtn').onclick=e=>pat(e.clientX,e.clientY);
+document.getElementById('catFace').onclick=e=>{meow();pat(e.clientX,e.clientY);};
+document.getElementById('nose').onclick=e=>{e.stopPropagation();meow();pat(e.clientX,e.clientY);showModal('●','BOOP.','u booped the snoot. +1000 aura. catboy is flustered.');};
+// small heart on tap anywhere
+addEventListener('pointerdown',e=>{
+  if(e.target.closest('button')||e.target.closest('#modal'))return;
+  const s=document.createElement('span');s.className='hearts-burst';s.textContent='♡';s.style.color='#e23a50';
+  s.style.left=e.clientX+'px';s.style.top=e.clientY+'px';document.body.appendChild(s);
+  setTimeout(()=>s.remove(),1000);
+});
+
+// coupons
+document.querySelectorAll('.coupon button').forEach(b=>b.onclick=()=>{
+  const c=b.closest('.coupon');c.classList.add('redeemed');b.textContent='Torn off';boom(60);meow();
+});
+
+// share
+document.getElementById('shareBtn').onclick=async()=>{
+  const txt='meow — i accept my catboy delivery. u r forgiven. now come cuddle. — mery';
+  try{await navigator.clipboard.writeText(txt);}catch(e){}
+  showModal('✉','copied','i copied a reply for u — go send it to him. (screenshot this site, he\'ll cry)');
+  boom(120);
+};
+</script>
+</body>
+</html>
